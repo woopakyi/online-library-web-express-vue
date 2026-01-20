@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+ <title>All Books</title>
+ <link rel='stylesheet' href='/stylesheets/style.css' />
+ <style>
+    table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+    th, td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+    }
+    th {
+        background-color: #f2f2f2;
+    }
+    #pagination {
+        margin-top: 20px;
+    }
+    #pagination span, #pagination a {
+        margin: 0 5px;
+    }
+    #pagination span {
+        font-weight: bold;
+    }
+ </style>
+</head>
+
+<body>
+ <h1>Book List</h1>
+ <table id="bookings">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Author</th>
+            <th>Category</th>
+            <th>Published Year</th>
+        </tr>
+    </thead>
+    <tbody id="bookings-body"></tbody>
+ </table>
+ <br>
+ <div id="pagination"></div>
+ <script>
+ // an async function to fetch bookings and metadata from the backend
+ async function getBookings(page, perPage) {
+    try {
+        // fetch the bookings
+        const response = await fetch(`/api/books?page=${page}&perPage=${perPage}`);
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        // convert the response to json
+        const json = await response.json();
+        // return the json
+        return json;
+    } catch (error) {
+        console.error('Error fetching data:', error);
+        return { data: [], pagination: { total: 0 } };
+    }
+ }
+
+ // a function to render the bookings
+ function renderBookings(bookings) {
+    // get the table body element
+    const tbody = document.getElementById('bookings-body');
+    // clear the table body
+    tbody.innerHTML = '';
+    
+    // if no bookings, show message
+    if (bookings.length === 0) {
+        const row = document.createElement('tr');
+        row.innerHTML = `<td colspan="4" style="text-align: center;">No books found</td>`;
+        tbody.appendChild(row);
+        return;
+    }
+    
+    // loop over the bookings
+    for (let book of bookings) {
+        // create a new row
+        const row = document.createElement('tr');
+        // add the book details to the row
+        row.innerHTML = `
+            <td>${book.title || 'N/A'}</td>
+            <td>${book.author || 'N/A'}</td>
+            <td>${book.category || 'N/A'}</td>
+            <td>${book.year || 'N/A'}</td>
+        `;
+        // append the row to the table
+        tbody.appendChild(row);
+    }
+ }
+
+ // a function to render the pagination links
+ function renderPagination(page, perPage, total) {
+    // get the pagination element
+    const pagination = document.getElementById('pagination');
+    // clear the pagination
+    pagination.innerHTML = '';
+    
+    // calculate total pages
+    const totalPages = Math.ceil(total / perPage);
+    
+    // if no pages, return
+    if (totalPages <= 1) return;
+    
+    // previous page link
+    if (page > 1) {
+        pagination.innerHTML += `<a href="#" onclick="renderPage(${page - 1}, ${perPage})">&laquo; Previous</a> `;
+    }
+    
+    // loop over the pages
+    for (let i = 1; i <= totalPages; i++) {
+        // if the page is the current page
+        if (i === page) {
+            // add a span element with the page number
+            pagination.innerHTML += `<span>${i}</span> `;
+        } else {
+            // add an anchor element with the page number
+            pagination.innerHTML += `<a href="#" onclick="renderPage(${i}, ${perPage})">${i}</a> `;
+        }
+    }
+    
+    // next page link
+    if (page < totalPages) {
+        pagination.innerHTML += `<a href="#" onclick="renderPage(${page + 1}, ${perPage})">Next &raquo;</a>`;
+    }
+ }
+
+ // an async function to render the page
+ async function renderPage(page, perPage) {
+    // default perPage to 10 if not specified
+    perPage = perPage || 10;
+    
+    // get the bookings data
+    const data = await getBookings(page, perPage);
+    
+    // render the bookings
+    renderBookings(data.data || data.bookings || []);
+    
+    // render the pagination links
+    renderPagination(
+        page,
+        perPage,
+        data.pagination?.total || data.total || 0
+    );
+ }
+
+ // Initialize the page
+ document.addEventListener('DOMContentLoaded', function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const perPage = urlParams.get("perPage") || 10;
+    renderPage(1, perPage);
+ });
+ </script>
+</body>
+</html>

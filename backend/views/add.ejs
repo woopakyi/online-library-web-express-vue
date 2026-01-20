@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title><%= title %></title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+  <style>
+    .form-gap {
+      margin-bottom: 1rem;
+    }
+    .isbn-feedback {
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+    crossorigin="anonymous"></script>
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg bg-body-tertiary">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="/">Online Library</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link" href="/">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="/books">Books</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/search">Search</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div class="d-flex justify-content-between mx-5"-->
+  <div class="container mx-3"-->
+  <div class="container mt-3"-->
+  <div class="container mx-3">
+    <!-- Success Alert -->
+    <% if (success) { %>
+      <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
+        Book added successfully!
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    <% } %>
+
+    <!-- Error Alert -->
+    <% if (error) { %>
+      <div class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
+        <%= error %>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    <% } %>
+
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/books">Books</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Add</li>
+      </ol>
+    </nav>
+
+    <!-- Form -->
+    <form id="bookForm" action="/books" method="POST">
+      <!-- Title (left) and Location (right) -->
+      <div class="row form-gap">
+        <div class="col-md-8">
+          <label for="title" class="form-label">Title</label>
+          <input type="text" class="form-control" id="title" name="title" 
+                 value="<%= book && book.title %>" required>
+        </div>
+        <div class="col-md-4">
+          <label for="location" class="form-label">Location</label>
+          <select class="form-select" id="location" name="location" required>
+            <option value="">Select location</option>
+            <% ['Shelf A1', 'Shelf A2', 'Shelf A3', 'Shelf B1', 'Shelf B2', 'Shelf B3', 'Shelf C1', 'Shelf C2', 'Shelf C3'].forEach(loc => { %>
+              <option value="<%= loc %>" 
+                <%= book && book.location === loc ? 'selected' : '' %>>
+                <%= loc %>
+              </option>
+            <% }); %>
+          </select>
+        </div>
+      </div>
+
+      <!-- Description (full width) -->
+      <div class="form-gap">
+        <label for="description" class="form-label">Description</label>
+        <textarea class="form-control" id="description" name="description" rows="3" required><%= book && book.description %></textarea>
+      </div>
+
+      <!-- ISBN (left), Author (middle), Year (right) -->
+      <div class="row form-gap">
+        <div class="col-md-4">
+          <label for="isbn" class="form-label">ISBN</label>
+          <input type="text" class="form-control" id="isbn" name="isbn" 
+                 value="<%= book && book.isbn %>" required>
+          <div class="invalid-feedback isbn-feedback">
+            A book with this ISBN already exists.
+          </div>
+        </div>
+        <div class="col-md-4">
+          <label for="author" class="form-label">Author</label>
+          <input type="text" class="form-control" id="author" name="author" 
+                 value="<%= book && book.author %>" required>
+        </div>
+        <div class="col-md-4">
+          <label for="year" class="form-label">Year</label>
+          <input type="number" class="form-control" id="year" name="year" 
+                 value="<%= book && book.year %>" min="1000" max="3000" required>
+        </div>
+      </div>
+
+      <!-- Cover URL (left), Publisher (middle), Category (right) -->
+      <div class="row form-gap">
+        <div class="col-md-4">
+          <label for="coverImage" class="form-label">Cover Image (URL or base64)</label>
+          <input type="text" class="form-control" id="coverImage" name="coverImage" 
+                 value="<%= book && book.coverImage %>" required>
+        </div>
+        <div class="col-md-4">
+          <label for="publisher" class="form-label">Publisher</label>
+          <input type="text" class="form-control" id="publisher" name="publisher" 
+                 value="<%= book && book.publisher %>" required>
+        </div>
+        <div class="col-md-4">
+          <label for="category" class="form-label">Category</label>
+          <select class="form-select" id="category" name="category" required>
+            <option value="">Select category</option>
+            <% ['Science', 'Technology', 'Engineering', 'Mathematics', 'Arts', 'Literature', 
+                'History', 'Geography', 'Philosophy', 'Psychology', 'Sociology', 'Economics', 
+                'Business', 'Law', 'Medicine', 'Health', 'Education', 'Politics', 'Religion', 
+                'Environment'].forEach(cat => { %>
+              <option value="<%= cat %>" 
+                <%= book && book.category === cat ? 'selected' : '' %>>
+                <%= cat %>
+              </option>
+            <% }); %>
+          </select>
+        </div>
+      </div>
+
+      <!-- View Count (hidden) and Highlight checkbox -->
+      <input type="hidden" id="viewCount" name="viewCount" value="0">
+
+      <div class="form-check mb-4">
+        <input class="form-check-input" type="checkbox" id="isHighlighted" name="isHighlighted"
+          <%= book && book.isHighlighted ? 'checked' : '' %>>
+        <label class="form-check-label" for="isHighlighted"> Highlight</label>
+      </div>
+
+      <!-- Save button -->
+      <button type="submit" class="btn btn-primary">Save</button>
+      <a href="/books" class="btn btn-secondary ms-2">Cancel</a>
+    </form>
+  </div>
+
+  <script>
+    document.getElementById('bookForm').addEventListener('submit', async function (e) {
+      e.preventDefault();
+
+      const isbnInput = document.getElementById('isbn');
+      const isbnFeedback = document.querySelector('.isbn-feedback');
+
+      try {
+        // Check if ISBN exists
+        const response = await fetch(`/books/check-isbn?isbn=${encodeURIComponent(isbnInput.value)}`);
+        const data = await response.json();
+
+        if (data.exists) {
+          isbnInput.classList.add('is-invalid');
+          isbnFeedback.style.display = 'block';
+        } else {
+          this.submit();
+        }
+      } catch (error) {
+        console.error('Error checking ISBN:', error);
+        this.submit(); // Fallback to server-side validation if client-side check fails
+      }
+    });
+
+    // Clear validation when ISBN changes
+    document.getElementById('isbn').addEventListener('input', function () {
+      this.classList.remove('is-invalid');
+      document.querySelector('.isbn-feedback').style.display = 'none';
+    });
+  </script>
+</body>
+</html>

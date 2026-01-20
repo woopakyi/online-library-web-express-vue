@@ -1,0 +1,307 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Add New Book</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+    }
+
+    .navbar {
+      margin-top: 0;
+    }
+
+    .form-gap {
+      margin-bottom: 1rem;
+    }
+
+    .cover-preview {
+      max-width: 200px;
+      max-height: 300px;
+      margin-top: 10px;
+    }
+
+    .loading-indicator {
+      display: none;
+      text-align: center;
+      padding: 20px 0;
+    }
+
+    .error-alert {
+      display: none;
+      margin: 15px;
+    }
+
+    .is-invalid {
+      border-color: #dc3545;
+    }
+
+    .invalid-feedback {
+      color: #dc3545;
+      display: block;
+      margin-top: 0.25rem;
+    }
+  </style>
+</head>
+
+<body id="app">
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg bg-body-tertiary">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="/">Online Library</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link" href="/">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="/books">Books</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/search">Search</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container my-4">
+    <!-- Loading Indicator -->
+    <div id="loadingIndicator" class="loading-indicator">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+      <p class="mt-2">Creating book...</p>
+    </div>
+
+    <!-- Error Alert -->
+    <div id="errorAlert" class="alert alert-danger error-alert" role="alert"></div>
+
+    <!-- Main Content -->
+    <div id="contentContainer">
+      <!-- Breadcrumb -->
+      <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="/">Home</a></li>
+          <li class="breadcrumb-item"><a href="/books">Books</a></li>
+          <li class="breadcrumb-item active" aria-current="page">Add New Book</li>
+        </ol>
+      </nav>
+
+      <!-- Book Form -->
+      <form class="container" v-on:submit.prevent="submitBook">
+        <!-- Title (left) and Location (right) -->
+        <div class="row form-gap">
+          <div class="col-md-8">
+            <label for="title" class="form-label">Title</label>
+            <input type="text" class="form-control" id="title" name="title" v-model="book.title" required>
+          </div>
+          <div class="col-md-4">
+            <label for="location" class="form-label">Location</label>
+            <select class="form-select" id="location" name="location" v-model="book.location" required>
+              <option value="">Select location</option>
+              <option value="Shelf A1">Shelf A1</option>
+              <option value="Shelf A2">Shelf A2</option>
+              <option value="Shelf A3">Shelf A3</option>
+              <option value="Shelf B1">Shelf B1</option>
+              <option value="Shelf B2">Shelf B2</option>
+              <option value="Shelf B3">Shelf B3</option>
+              <option value="Shelf C1">Shelf C1</option>
+              <option value="Shelf C2">Shelf C2</option>
+              <option value="Shelf C3">Shelf C3</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Description (full width) -->
+        <div class="form-gap">
+          <label for="description" class="form-label">Description</label>
+          <textarea class="form-control" id="description" name="description" rows="3" v-model="book.description"
+            required></textarea>
+        </div>
+
+        <!-- ISBN (left), Author (middle), Year (right) -->
+        <div class="row form-gap">
+          <div class="col-md-4">
+            <label for="isbn" class="form-label">ISBN</label>
+            <input type="text" class="form-control" id="isbn" name="isbn" v-model="book.isbn"
+              :class="{ 'is-invalid': isbnError }" @input="clearIsbnError" required>
+            <div class="invalid-feedback" v-if="isbnError">
+              A book with this ISBN already exists.
+            </div>
+          </div>
+          <div class="col-md-4">
+            <label for="author" class="form-label">Author</label>
+            <input type="text" class="form-control" id="author" name="author" v-model="book.author" required>
+          </div>
+          <div class="col-md-4">
+            <label for="year" class="form-label">Year</label>
+            <input type="number" class="form-control" id="year" name="year" v-model="book.year" min="1000" max="3000"
+              required>
+          </div>
+        </div>
+
+        <!-- Cover URL (left), Publisher (middle), Category (right) -->
+        <div class="row form-gap">
+          <div class="col-md-4">
+            <label for="coverImage" class="form-label">Cover Image URL</label>
+            <input type="text" class="form-control" id="coverImage" name="coverImage" v-model="book.coverImage"
+              required>
+            <img id="coverPreview" :src="book.coverImage" alt="Cover Preview" class="cover-preview"
+              v-if="book.coverImage">
+          </div>
+          <div class="col-md-4">
+            <label for="publisher" class="form-label">Publisher</label>
+            <input type="text" class="form-control" id="publisher" name="publisher" v-model="book.publisher" required>
+          </div>
+          <div class="col-md-4">
+            <label for="category" class="form-label">Category</label>
+            <select class="form-select" id="category" name="category" v-model="book.category" required>
+              <option value="">Select category</option>
+              <option value="Science">Science</option>
+              <option value="Technology">Technology</option>
+              <option value="Engineering">Engineering</option>
+              <option value="Mathematics">Mathematics</option>
+              <option value="Arts">Arts</option>
+              <option value="Literature">Literature</option>
+              <option value="History">History</option>
+              <option value="Geography">Geography</option>
+              <option value="Philosophy">Philosophy</option>
+              <option value="Psychology">Psychology</option>
+              <option value="Sociology">Sociology</option>
+              <option value="Economics">Economics</option>
+              <option value="Business">Business</option>
+              <option value="Law">Law</option>
+              <option value="Medicine">Medicine</option>
+              <option value="Health">Health</option>
+              <option value="Education">Education</option>
+              <option value="Politics">Politics</option>
+              <option value="Religion">Religion</option>
+              <option value="Environment">Environment</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- View Count (hidden) and Highlight checkbox -->
+        <input type="hidden" id="viewCount" name="viewCount" v-model="book.viewCount" value="0">
+
+        <div class="form-check mb-4">
+          <input class="form-check-input" type="checkbox" id="isHighlighted" name="isHighlighted"
+            v-model="book.isHighlighted">
+          <label class="form-check-label" for="isHighlighted"> Highlighted Book</label>
+        </div>
+
+        <!-- Save button -->
+        <button type="submit" class="btn btn-primary">Save</button>
+        <a href="/books" class="btn btn-secondary ms-2">Cancel</a>
+      </form>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script type="module">
+    import { createApp } from 'https://unpkg.com/vue@3/dist/vue.esm-browser.js'
+
+    createApp({
+      data() {
+        return {
+          book: {
+            title: '',
+            location: '',
+            description: '',
+            isbn: '',
+            author: '',
+            year: '',
+            coverImage: '',
+            publisher: '',
+            category: '',
+            isHighlighted: false,
+            viewCount: '0',
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+          },
+          isbnError: false
+        }
+      },
+      methods: {
+        showLoading() {
+          document.getElementById('loadingIndicator').style.display = 'block';
+          document.getElementById('contentContainer').style.display = 'none';
+          document.getElementById('errorAlert').style.display = 'none';
+        },
+        showError(message) {
+          document.getElementById('errorAlert').textContent = message;
+          document.getElementById('errorAlert').style.display = 'block';
+          document.getElementById('contentContainer').style.display = 'block';
+        },
+        showContent() {
+          document.getElementById('loadingIndicator').style.display = 'none';
+          document.getElementById('errorAlert').style.display = 'none';
+          document.getElementById('contentContainer').style.display = 'block';
+        },
+        clearIsbnError() {
+          this.isbnError = false;
+        },
+        async checkIsbn() {
+          if (!this.book.isbn) return true; // Skip if ISBN is empty
+
+          try {
+            const response = await fetch(`/books/check-isbn?isbn=${encodeURIComponent(this.book.isbn)}`);
+            const data = await response.json();
+            return !data.exists; // Return true if ISBN doesn't exist
+          } catch (error) {
+            console.error('ISBN check error:', error);
+            return true; // Allow submission if check fails (fallback to server validation)
+          }
+        },
+        async submitBook() {
+          // First check ISBN
+          const isbnValid = await this.checkIsbn();
+          if (!isbnValid) {
+            this.isbnError = true;
+            this.showContent();
+            return;
+          }
+
+          // Proceed with book creation if ISBN is valid
+          this.showLoading();
+          try {
+            const response = await fetch('/api/books', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(this.book)
+            });
+
+            if (!response.ok) {
+              const errorData = await response.json();
+              throw new Error(errorData.error?.message || 'Failed to create book');
+            }
+
+            const data = await response.json();
+            alert('Book created successfully!');
+            window.location.href = '/book/detail/' + data._id + '?success=true';
+          } catch (error) {
+            this.showError(error.message);
+            console.error('Create error:', error);
+          } finally {
+            this.showContent();
+          }
+        }
+      }
+    }).mount('#app')
+  </script>
+</body>
+
+</html>
