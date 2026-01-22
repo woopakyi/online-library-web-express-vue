@@ -56,21 +56,21 @@ The project was developed in three progressive stages:
 ### Backend
 ```bash
 cd backend
-npm install
-cp .env.example .env          # Set MONGO_URI, JWT_SECRET, PORT...
-npm run dev
+npm install        
+npm start
 ```
 
-API usually available at: `http://localhost:5000`
+API is available at: `http://localhost:5000`
 
 ### Frontend
 ```bash
 cd frontend
 npm install
+npm audit fix            # optional
 npm run dev
 ```
 
-Frontend usually available at: `http://localhost:5173`
+Frontend is available at: `http://localhost:5173`
 
 (Configure proxy in `vite.config.js` for development: `/api` → backend)
 
