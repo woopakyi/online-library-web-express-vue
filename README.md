@@ -78,27 +78,32 @@ Frontend usually available at: `http://localhost:5173`
 - Build frontend: `cd frontend && npm run build`
 - Serve from backend or separately (Vercel / Netlify / Render)
 
-## Screenshots
-
-### Homepage (with carousel and sections)
-
-![Homepage](images/homepage-desktop.png)
-
-### Mobile View (responsive single-column)
-
-![Homepage Mobile](images/homepage-mobile.png)
-
-### Book Detail – Admin View (borrow history table)
-
-![Book Detail Admin](images/book-detail-admin.png)
-
-### User Management – Admin Panel (Oruga table)
-
-![User Management](images/user-management.png)
+## Screenshots of Normal User Panel
+Note that Desktop View is on the left while Mobile View is on the right.
 
 ### Login Page
 
-![Login](imagess/login.png)
+<img src="images/user-account-login.png" width="45%">
+
+### Homepage (with carousel and sections)
+<img src="images/homepage.png" width="45%">
+
+### Overview of Books
+<img src="images/books.png" width="45%">
+
+### Book Details
+
+<img src="images/books-detail_web.png" width="45%">  <img src="images/books-detail_phone.png" width="15.4%">
+
+## Screenshots of Admin Panel
+### Booking Record
+<img src="images/admin_record.png" width="45%">
+
+### Books Adding and Editing
+<img src="images/admin_book-add.png" width="45.5%">  <img src="images/admin-book-edit.png" width="45%">
+
+### User Management
+<img src="images/admin_user-management1.png" width="45%">  <img src="images/admin_user-management2.png" width="51.9%">
 
 ## License
 
