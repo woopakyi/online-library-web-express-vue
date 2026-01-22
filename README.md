@@ -108,3 +108,8 @@ Note that Desktop View is on the left while Mobile View is on the right.
 ## License
 
 Built as part of **COMP3047** coursework – for educational purposes only.
+- Backend [GitHub]([https://github.com/Li-Chongyi/Zero-DCE_extension](https://github.com/UG-CS-HKBU/comp3047-fall2024-express-template))
+- Frontend: [GitHub]([https://github.com/ChaoningZhang/MobileSAM](https://github.com/UG-CS-HKBU/comp3047-fall2024-vue-template))
+
+
+
