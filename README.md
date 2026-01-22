@@ -6,12 +6,6 @@ This repository contains a complete full-stack **Online Library Management Syste
 
 Note that this is **not** a real library system for any faculty or institution. It is an educational demonstration to practice modern web development concepts and technologies.
 
-The project was developed in three progressive stages:
-
-1. Monolithic app with HTML/Bootstrap + Express + MongoDB (basic book CRUD & homepage)
-2. Separation into RESTful API backend + Vue 3 (Composition API) frontend with pagination, search, filters
-3. Addition of JWT authentication, role-based authorization (Admin / Normal User), book borrowing/returning, admin user management
-
 
 ## Features Implemented
 
@@ -30,35 +24,27 @@ Note that Desktop View is on the left while Mobile View is on the right.
 
 
 ### Homepage
-<img src="images/user_homepage_desktop.png" width="45%">  |  <img src="images/user_homepage_mobile.png" width="15%">
+<img src="images/user_homepage_desktop.png" width="50%">  |  <img src="images/user_homepage_mobile.png" width="25%">
 
 ### Login Page
-<img src="images/user_login_desktop.png" width="45%">  |  <img src="images/user_login_mobile.png" width="20%">
+<img src="images/user_login_desktop.png" width="50%">  |  <img src="images/user_login_mobile.png" width="25%">
 
 ### Overview of Books
-<img src="images/user_books_desktop.png" width="45%">  |  <img src="images/user_books_mobile.png" width="45%">
+<img src="images/user_books_desktop.png" width="50%">  |  <img src="images/user_books_mobile.png" width="8.1%">
 
 ### Book Details
 
-<img src="images/user_book_detail_desktop.png" width="45%">  |  <img src="images/user_book_detail_mobile.png" width="15.4%">
+<img src="images/user_book_detail_desktop.png" width="50%">  |  <img src="images/user_book_detail_mobile.png" width="17.1%">
 
 ## Screenshots of Admin Panel
 ### Booking Record
-<img src="images/admin_record.png" width="45%">
+<img src="images/admin_record.png" width="50%">
 
 ### Books Adding and Editing
-<img src="images/admin_book-add.png" width="45.5%">  |  <img src="images/admin-book-edit.png" width="45%">
+<img src="images/admin_book_add.png" width="45.5%">  |  <img src="images/admin_book_edit.png" width="45%">
 
-
-## Project Structure
-
-```
-├── backend/          # Express API + MongoDB logic
-├── frontend/         # Vue 3 single-page application
-├── images/      # Demo images
-└── README.md
-```
-
+### Account Management
+  <img src="images/admin_account_overview.png" width="45%">  |  <img src="images/admin_account_management.png" width="52%">
 
 ## Tech Stack
 
@@ -88,7 +74,7 @@ npm install
 npm start
 ```
 
-API is available at: `http://localhost:5000`
+Backend is available at: `http://localhost:3000`. It serves without api for website testing.
 
 ### Frontend
 ```bash
@@ -98,16 +84,9 @@ npm audit fix            # optional
 npm run dev
 ```
 
-Frontend is available at: `http://localhost:5173`
+Frontend is available at: `http://localhost:5173`. It serves with api for constant service.
 
 (Configure proxy in `vite.config.js` for development: `/api` → backend)
-
-### Production / Deployment (optional for demo)
-- Build frontend: `cd frontend && npm run build`
-- Serve from backend or separately (Vercel / Netlify / Render)
-
-### User Management
-<img src="images/admin_user-management1.png" width="45%">  <img src="images/admin_user-management2.png" width="51.9%">
 
 ## License
 
